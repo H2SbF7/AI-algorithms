@@ -44,19 +44,26 @@ public class ID3 {
 
     private void execute() {
         float minSumAverageEntropy = 1;
-        int numOfColumnValid = validName.size();
+        int validColumns = validName.size();
         String nameChoose = "";
         String columnChoose = "";
-        String resultCol = validColumn.get(validName.get(numOfColumnValid - 1)).toString();
-        for (int i = 0; i < numOfColumnValid - 1; i++) {
+        String resultCol = validColumn.get(validName.get(validColumns - 1)).toString();
+
+        System.out.println("Calculating Average Entropy of each attribute:");
+
+        for (int i = 0; i < validColumns - 1; i++) {
             String attributeCol = this.validColumn.get(this.validName.get(i)).toString();
             float avgEntropy = calcAvgEntropy(attributeCol, resultCol);
+            
+            System.out.println(this.validName.get(i) + ": " + avgEntropy);
             if (minSumAverageEntropy > avgEntropy) {
                 minSumAverageEntropy = avgEntropy;
                 columnChoose = attributeCol;
                 nameChoose = this.validName.get(i);
             }
+            
         }
+        System.out.println("\n Picking out the decisive attribute: " + nameChoose);
         toRuleAndNextID3(nameChoose, columnChoose, resultCol);
     }
 
@@ -73,19 +80,28 @@ public class ID3 {
         JSONObject currentRule = new JSONObject();
         ArrayList<String> nextTitleID3 = new ArrayList<>();
         // nextJSONID3.remove(nameColumnRemove);
+
         for (int i = 0; i < resultData.length; i++) {
             Object valueData = currentRule.get(attrDataToRule[i]);
+
             if (valueData != null) {
+
                 if (!valueData.toString().equals(resultData[i]) 
-                && 
-                !valueData.toString().equals("")) {
+                && !valueData.toString().equals("")) {
                     currentRule.put(attrDataToRule[i], "");
                 }
             }
             else 
                 currentRule.put(attrDataToRule[i], resultData[i]); 
+                
         }
         // TODO: decision tree here
+        // for(int i = 0; i < resultData.length; i++){
+        //     System.out.println("Rule: " + currentRule.get(attrDataToRule[i]) + ", " + currentRule.get(resultData[i]));
+        //     System.out.println();
+        // }
+        
+
         for(String element : attrCasesToRule) {
             currentRule.get(element).toString();
         }
@@ -124,6 +140,7 @@ public class ID3 {
         ArrayList<String> resultCases = getCases(resultData);
         ArrayList<String> attributeCases = getCases(attributeData);
         // sum(average) 
+        
         int numCase = attributeCases.size();
         float sumAverageEntropy = 0;
         for (int i = 0; i < numCase; i++) {
