@@ -1,0 +1,6 @@
+﻿OrdNum,Size,Color,Shape,Decision
+1,Med,Red,Ball,Buy
+2,Large,Yellow,Box,Buy
+3,Med,Blue,Cylinder,Not buy
+4,Small,Blue,Ball,Buy
+5,Med,Blue,Cone,Not buy
