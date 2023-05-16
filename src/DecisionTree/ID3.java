@@ -16,17 +16,18 @@ public class ID3 {
         if (dataJSON.size() ==  0) return;
         this.rootData = dataJSON;
         this.title = title;
-        validateColumn();
+        validateColumn(true);
         execute();
     }
     // check if a column is an attribute column or a result column
-    private void validateColumn() {
+    private void validateColumn(boolean isFirst) {
         this.validColumn = new JSONObject();
         this.validName = new ArrayList<>();
         for(int i = 0; i < this.title.length; i++) {
             String[] dataColumn = this.rootData.get(title[i]).toString().split(",");
             int length = dataColumn.length;
             boolean checkUnique = true;
+            boolean checkSame = true;
             for (int j = 0 ; j < length - 1; j++) {
                 for (int k = j + 1; k < length; k++) {
                     if (dataColumn[j].equals(dataColumn[k])) {
@@ -35,10 +36,21 @@ public class ID3 {
                     }
                 }
             }
-            if (!checkUnique) {
+            for (int j = 0 ; j < length - 1; j++) {
+                for (int k = j + 1; k < length; k++) {
+                    if (!dataColumn[j].equals(dataColumn[k])) {
+                        checkSame = false;
+                        break;
+                    }
+                }
+            }
+            if ((!checkUnique || !isFirst) && !checkSame) {
                 this.validName.add(this.title[i]);
                 this.validColumn.put(this.title[i], this.rootData.get(this.title[i]));
             }
+        }
+        if (isFirst && this.validColumn.size() == 0) {
+            this.validateColumn(false);
         }
     }
 
